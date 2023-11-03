@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import vn.edu.iuh.fit.backend.models.Candidate;
 import vn.edu.iuh.fit.backend.repositories.CandidateRepository;
-import vn.edu.iuh.fit.backend.services.CandidateServices;
+import vn.edu.iuh.fit.backend.services.CandidateService;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ public class CandidateController {
     @Autowired
     private CandidateRepository candidateRepository;
     @Autowired
-    private CandidateServices candidateServices;
+    private CandidateService candidateServices;
 
     @GetMapping("/list")
     public String showCandidateList(Model model) {

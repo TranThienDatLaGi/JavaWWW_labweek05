@@ -26,7 +26,7 @@ public class Candidate {
     private LocalDate dob;
 
     @OneToOne(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
-    @JoinColumn(name = "address", nullable = false)
+    @JoinColumn(name = "address",referencedColumnName = "add_id", nullable = false)
     private Address address;
 
     @Column(name = "phone", length = 15, nullable = false, unique = true)

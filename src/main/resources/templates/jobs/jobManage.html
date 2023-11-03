@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Manage</title>
+    <!--css-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!--js-->
+    <script th:src="@{/js/jQuery.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+    <main>
+        <header th:insert="~{components/header.html}"></header>
+
+        <section class="container">
+            <h1 class="text-center">Job Manage</h1>
+
+            <form action="/jobs" method="get" class="d-flex gap-3">
+                <select name="company-id" class="form-select" aria-label="Default select example">
+                    <option th:selected="${company.getId() == comId} ? selected" th:each="company : ${companies}" th:value="*{company.getId()}" th:text="*{company.getName()}" />
+                </select>
+                <button type="submit" class="btn btn-primary text-nowrap">Get jobs</button>
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="job : ${jobs}">
+                        <th scope="row" th:text="*{job.getId()}" />
+                        <td th:text="*{job.getName()}" />
+                        <td th:text="*{job.getDescription()}" />
+                        <td>
+                            <a th:href="@{/jobs/{param}(param=${job.getId()})}">Detail</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

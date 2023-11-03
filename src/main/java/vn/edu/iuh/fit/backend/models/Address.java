@@ -3,10 +3,12 @@ package vn.edu.iuh.fit.backend.models;
 import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "address")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {

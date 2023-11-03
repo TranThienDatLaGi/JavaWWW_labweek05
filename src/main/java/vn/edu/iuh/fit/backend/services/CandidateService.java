@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class CandidateServices {
+public class CandidateService {
     @Autowired
     private CandidateRepository candidateRepository;
 
