@@ -16,14 +16,6 @@
 
         <section class="container">
             <h1 class="text-center">Job Manage</h1>
-
-            <form action="/jobs" method="get" class="d-flex gap-3">
-                <select name="company-id" class="form-select" aria-label="Default select example">
-                    <option th:selected="${company.getId() == comId} ? selected" th:each="company : ${companies}" th:value="*{company.getId()}" th:text="*{company.getName()}" />
-                </select>
-                <button type="submit" class="btn btn-primary text-nowrap">Get jobs</button>
-            </form>
-
             <table class="table">
                 <thead>
                     <tr>
@@ -44,6 +36,9 @@
                     </tr>
                 </tbody>
             </table>
+            <form action="/jobs/add" method="get">
+                <button type="submit" class="btn btn-success">Add</button>
+            </form>
         </section>
     </main>
 </body>

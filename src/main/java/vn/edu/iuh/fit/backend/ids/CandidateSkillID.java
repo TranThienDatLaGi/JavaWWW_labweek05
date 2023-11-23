@@ -1,29 +1,15 @@
 package vn.edu.iuh.fit.backend.ids;
 
-import vn.edu.iuh.fit.backend.models.Candidate;
-import vn.edu.iuh.fit.backend.models.Skill;
+import lombok.*;
 
 import java.io.Serializable;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CandidateSkillID implements Serializable {
-    private Skill skill;
-    private Candidate candidate;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CandidateSkillID that = (CandidateSkillID) o;
-
-        if (!skill.equals(that.skill)) return false;
-        return candidate.equals(that.candidate);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = skill.hashCode();
-        result = 31 * result + candidate.hashCode();
-        return result;
-    }
+    private long skill;
+    private long candidate;
 }

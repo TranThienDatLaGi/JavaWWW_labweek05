@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Company</title>
+    <!--css-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!--js-->
+    <script th:src="@{/js/jQuery.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<main>
+    <header th:insert="~{components/header.html}"></header>
+    <section class="container mt-3">
+        <h1 class="text-center">Add company</h1>
+        <form action="/companies/add" method="post" th:object="${company}" class="mt-3">
+            <div class="mb-3 row">
+                <label for="name" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="name" th:field="${company.name}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                <div class="col-sm-10">
+                    <input type="tel" class="form-control" id="phone" th:field="${company.phone}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" id="email" th:field="${company.email}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="url" class="col-sm-2 col-form-label">Web URL</label>
+                <div class="col-sm-10">
+                    <input type="url" class="form-control" id="url" th:field="${company.webURL}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="about" class="col-sm-2 col-form-label">About</label>
+                <div class="col-sm-10">
+<!--                    <input type="text" class="form-control" id="about" th:field="${company.about}">-->
+                    <textarea class="form-control" id="about" th:field="${company.about}"></textarea>
+                </div>
+            </div>
+            <div class="mb-3 row gutter-0">
+                <label class="col-sm-2 col-form-label">Address</label>
+                <label class="col-sm-1">
+                    <input type="text" class="form-control" placeholder="Number" th:field="${address.number}">
+                </label>
+                <label class="col-sm-1">
+                    <input type="text" class="form-control" placeholder="Street" th:field="${address.street}">
+                </label>
+                <label class="col-sm-1">
+                    <input type="text" class="form-control" placeholder="Zipcode" th:field="${address.zipcode}">
+                </label>
+                <label class="col-sm-3">
+                    <input type="text" class="form-control" placeholder="City" th:field="${address.city}">
+                </label>
+                <label class="col-sm-4">
+                    <select class="form-select" aria-label="Default select example" th:field="${address.country}">
+                        <option th:each="country : ${countryCodes}"
+                                th:value="${country}"
+                                th:text="${country.getName()}" />
+                    </select>
+                </label>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Add company</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HOME CANDIDATE PAGE</title>
+    <title>HOME COMPANY PAGE</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <!--js-->
     <script th:src="@{/js/jQuery.js}"></script>
@@ -17,26 +17,28 @@
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Dob</th>
+            <th>About</th>
             <th>Address</th>
             <th>Phone</th>
+            <th>Web URL</th>
             <th>Email</th>
             <th>Method</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="c:${candidates}">
+        <tr th:each="c:${companies}">
             <td th:text="${c.getId()}"></td>
-            <td th:text="${c.getFullName()}"></td>
-            <td th:text="${c.getDob()}"></td>
+            <td th:text="${c.getName()()}"></td>
+            <td th:text="${c.getAbout()()}"></td>
             <td th:text="${c.getAddress().toString()}"></td>
             <td th:text="${c.getPhone()}"></td>
+            <td th:text="${c.getWebURL()()}"></td>
             <td th:text="${c.getEmail()}"></td>
             <td>
-                <form  th:action="@{/candidates/update/{id}(id=${c.getId()})}" method="get">
+                <form  th:action="@{/companies/update/{id}(id=${c.getId()})}" method="get">
                     <button style="float: left" type="submit" class="btn btn-secondary" >Update</button>
                 </form>
-                <form  th:action="@{/candidates/delete/{id}(id=${c.getId()})}" th:method="post">
+                <form  th:action="@{/companies/delete/{id}(id=${c.getId()})}" th:method="post">
                     <button style="float: left" type="submit" class="btn btn-secondary">Delete</button>
                 </form>
             </td>
@@ -44,13 +46,13 @@
         </tbody>
 
     </table>
-    <form action="/candidates/add" method="get">
+    <form action="/companies/add" method="get">
         <button type="submit" class="btn btn-success">Add</button>
     </form>
     <br>
     <div>
         <div th:each="i: ${totalPage}">
-            <form th:action="@{/candidates/page}" th:method="get">
+            <form th:action="@{/companies/page}" th:method="get">
                 <input type="hidden" th:name="page" th:value="${i}">
                 <input type="hidden" th:name="size" th:value="7">
                 <button th:text="${i}" type="submit" th:class="${curPage==i}?'active btn btn-secondary':'btn btn-secondary'" style="float: left; margin-left: 5px"></button>

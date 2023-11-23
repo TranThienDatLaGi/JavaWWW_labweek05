@@ -1,31 +1,31 @@
-package vn.edu.iuh.fit.backend.models;
+package vn.edu.iuh.fit.backend.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import vn.edu.iuh.fit.backend.enums.SkillLevel;
 import vn.edu.iuh.fit.backend.ids.CandidateSkillID;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "candidate_skill")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@ToString
 @IdClass(CandidateSkillID.class)
-public class CandidateSkill {
+public class CandidateSkill implements Serializable {
+    @Column(name = "skill_level", nullable = false)
+    private SkillLevel skillLevel;
     @Id
     @ManyToOne
     @JoinColumn(name = "skill_id")
     private Skill skill;
-
     @Id
     @ManyToOne
     @JoinColumn(name = "can_id")
     private Candidate candidate;
-
-    @Column(name = "skill_level", nullable = false)
-    private SkillLevel skillLevel;
     @Column(name = "more_infos", length = 1000)
     private String moreInfo;
 }

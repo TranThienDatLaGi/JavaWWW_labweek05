@@ -1,71 +1,116 @@
 package vn.edu.iuh.fit.frontend.controllers;
 
+import com.neovisionaries.i18n.CountryCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-import vn.edu.iuh.fit.backend.models.Candidate;
+import org.springframework.web.bind.annotation.*;
+import vn.edu.iuh.fit.backend.entities.Address;
+import vn.edu.iuh.fit.backend.entities.Candidate;
+import vn.edu.iuh.fit.backend.entities.Skill;
+import vn.edu.iuh.fit.backend.repositories.AddressRepository;
 import vn.edu.iuh.fit.backend.repositories.CandidateRepository;
-import vn.edu.iuh.fit.backend.services.CandidateService;
+import vn.edu.iuh.fit.backend.repositories.SkillRepository;
+import vn.edu.iuh.fit.backend.services.CandidateServices;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
+@RequestMapping("/candidates")
 public class CandidateController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Autowired
     private CandidateRepository candidateRepository;
     @Autowired
-    private CandidateService candidateServices;
+    private AddressRepository addressRepository;
+    @Autowired
+    private CandidateServices candidateServices;
+    @GetMapping
+    public String manage(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        int sizeInteger = size.orElse(10);
 
-    @GetMapping("/list")
-    public String showCandidateList(Model model) {
-        model.addAttribute("candidates", candidateRepository.findAll());
-        return "candidates/candidates";
+        Page<Candidate> candidates = candidateServices.findAll(page.orElse(1), sizeInteger, "id", "asc");
+        long count = candidateRepository.count();
+        int numberPages = (int) Math.ceil((double) count / sizeInteger);
+
+        model.addAttribute("candidates", candidates);
+        model.addAttribute("pages", IntStream.rangeClosed(1, numberPages).boxed().collect(Collectors.toList()));
+
+        return "/candidates/index";
+    }
+    @GetMapping("/add")
+    public String addController(Model model) {
+        Candidate candidate = new Candidate();
+        Address address = new Address();
+        candidate.setAddress(address);
+        model.addAttribute("candidate", candidate);
+        model.addAttribute("address", address);
+        model.addAttribute("countryCodes", CountryCode.values());
+        return "/candidates/addCandidate";
     }
 
-    @GetMapping("/candidates")
-    public String showCandidateListPaging(Model model,
-                                          @RequestParam("page") Optional<Integer> page,
-                                          @RequestParam("size") Optional<Integer> size) {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(10);
-        /*Page<Candidate> candidatePage= candidateServices.findPaginated(
-                PageRequest.of(currentPage - 1, pageSize)
-        );*/
-        Page<Candidate> candidatePage = candidateServices.findAll(currentPage - 1,
-                pageSize, "id", "asc");
 
-        model.addAttribute("candidatePage", candidatePage);
 
-        int totalPages = candidatePage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
+    @PostMapping("/add")
+    public String addController(@ModelAttribute("candidate") Candidate candidate, @ModelAttribute("address") Address address, Model model) {
+        try {
+            Address addressSave = addressRepository.save(address);
+            candidate.setAddress(addressSave);
+
+            candidateRepository.save(candidate);
+
+            return "redirect:/candidates";
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
-        return "candidates/candidates-paging";
+
+        model.addAttribute("candidate", candidate);
+        model.addAttribute("address", address);
+        model.addAttribute("countryCodes", CountryCode.values());
+
+        return "/candidates/addCandidate";
+    }
+    @GetMapping("/update/{id}")
+    public String getFormUpdate(Model model,@PathVariable("id") long id){
+        Candidate candidate = candidateRepository.findById(id).orElse(null);
+        if(candidate==null) return "candidates/index";
+        Address address = candidate.getAddress();
+        model.addAttribute("candidate", candidate);
+        model.addAttribute("address", address);
+        model.addAttribute("countryCodes", CountryCode.values());
+        return "candidates/update";
+    }
+    @PostMapping("/update")
+    public String updateController(@ModelAttribute("candidate") Candidate candidate, @ModelAttribute("address") Address address, Model model) {
+        try {
+            Address addressSave = addressRepository.save(address);
+            candidate.setAddress(addressSave);
+            candidateRepository.save(candidate);
+            return "redirect:/candidates";
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        model.addAttribute("candidate", candidate);
+        model.addAttribute("address", address);
+        model.addAttribute("countryCodes", CountryCode.values());
+
+        return "/candidates/update";
     }
 
-    @PostMapping("/candidates/add")
-    public String addCandidate(Candidate candidate, BindingResult result, Model model) {
-        candidateRepository.save(candidate);
+    @PostMapping ("/delete/{id}")
+    public String delete(@PathVariable("id") long id){
+        candidateRepository.deleteById(id);
         return "redirect:/candidates";
-    }
-
-    @GetMapping("/add-candidate")
-    public ModelAndView add(Model mode) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("candidate", new Candidate());
-        modelAndView.setViewName("candidates/add-candidate");
-        return modelAndView;
     }
 }
